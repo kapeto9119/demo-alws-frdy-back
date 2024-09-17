@@ -7,10 +7,10 @@ WORKDIR /app
 # Copiar los archivos package.json y package-lock.json
 COPY package*.json ./
 
-# Instalar las dependencias de producción
-RUN npm install --only=production
+# Instalar todas las dependencias (incluyendo las de desarrollo)
+RUN npm install
 
-# Copiar todo el código fuente
+# Copiar el resto del código de la aplicación
 COPY . .
 
 # Compilar el código TypeScript a JavaScript
