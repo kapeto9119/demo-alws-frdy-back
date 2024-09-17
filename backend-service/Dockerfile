@@ -13,11 +13,11 @@ RUN npm install
 # Copiar el resto del código de la aplicación
 COPY . .
 
+# Asegurar que todos los archivos tienen permisos adecuados
+RUN chmod -R 755 /app
+
 # Compilar el código TypeScript a JavaScript
 RUN npm run build
-
-# Verificar que la carpeta dist/ fue generada
-RUN ls -la dist
 
 # Exponer el puerto en el que el backend se ejecutará
 EXPOSE 5000
