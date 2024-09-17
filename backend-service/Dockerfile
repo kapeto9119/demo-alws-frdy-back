@@ -7,11 +7,14 @@ WORKDIR /app
 # Copiar los archivos package.json y package-lock.json
 COPY package*.json ./
 
-# Instalar las dependencias
-RUN npm install
+# Instalar las dependencias de producción
+RUN npm install --only=production
 
-# Copiar el resto del código de la aplicación
+# Copiar todo el código fuente
 COPY . .
+
+# Compilar el código TypeScript a JavaScript
+RUN npm run build
 
 # Exponer el puerto en el que el backend se ejecutará
 EXPOSE 5000
