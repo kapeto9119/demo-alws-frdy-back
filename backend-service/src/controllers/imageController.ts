@@ -48,10 +48,10 @@ export const uploadImage = [
       if (scaleFactor) formData.append('scale_factor', scaleFactor);
       if (minNeighbors) formData.append('min_neighbors', minNeighbors);
 
-      const response = await fetch('http://localhost:8000/', {
+      const response = await fetch('http://ml-service:8000/', {
         method: 'POST',
         body: formData as any,
-      });
+      });      
 
       if (!response.ok) {
         const errorText = await response.text();
