@@ -19,7 +19,7 @@ app.use(helmet());
 // Enable CORS
 app.use(
   cors({
-    origin: 'http://localhost:3000', // Adjust as needed
+    origin: ['http://localhost:3000', 'http://demo.neolink.cl'],
     methods: ['GET', 'POST'],
   })
 );
