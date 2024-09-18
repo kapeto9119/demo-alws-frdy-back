@@ -1,30 +1,28 @@
-name: Backend CI
+name: Deploy to Production
 
 on:
   push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
-  build-and-test:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: backend-service
-
     steps:
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '16'
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: npm install
+
+      - name: Build application
+        run: npm run build
 
       - name: Build Docker Image
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/backend-service:latest .
@@ -37,3 +35,15 @@ jobs:
 
       - name: Push Docker Image to Docker Hub
         run: docker push ${{ secrets.DOCKER_USERNAME }}/backend-service:latest
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: ${{ secrets.PRODUCTION_EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker pull ${{ secrets.DOCKER_USERNAME }}/backend-service:latest
+            docker stop backend-service || true
+            docker rm backend-service || true
+            docker run --name backend-service --network demo-always-friday-network -p 5000:5000 -d ${{ secrets.DOCKER_USERNAME }}/backend-service
