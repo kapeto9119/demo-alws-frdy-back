@@ -52,5 +52,6 @@ jobs:
             docker pull ${{ secrets.DOCKER_USERNAME }}/backend-service:latest
             docker stop backend-service || true
             docker rm backend-service || true
+            docker rmi $(docker images -q ${{ secrets.DOCKER_USERNAME }}/backend-service) || true
             docker run --name backend-service --network demo-always-friday-network -p 5000:5000 -d ${{ secrets.DOCKER_USERNAME }}/backend-service:latest
           EOF
